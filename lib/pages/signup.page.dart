@@ -51,7 +51,7 @@ class SignupPage extends StatelessWidget {
       TextEditingController();
   final TextEditingController _controladorProfissao = TextEditingController();
   final TextEditingController _controladorNivel = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     var children2 = <Widget>[
@@ -102,6 +102,12 @@ class SignupPage extends StatelessWidget {
         height: 20,
       ),
       TextFormField(
+        validator: (value) {
+          if (value.isEmpty) return "O campo é Obrigatório!";
+          if (value.length < 5)
+            return "O campo precisa ter mais de 4 caracteres.";
+          return null;
+        },
         controller: _controladornome,
         // autofocus: true,
         keyboardType: TextInputType.text,
@@ -356,9 +362,23 @@ class SignupPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             onPressed: () {
-              FirebaseFirestore.instance
-                  .collection('Usuários')
-                  .add({'Nome': _controladornome});
+              FirebaseFirestore.instance.collection('Usuários').add({
+                'Nome': _controladornome.text,
+                'E-mail': _controladoremail.text,
+                'Telefone': _controladorTelefone.text,
+                'Celular': _controladorCelular.text,
+                'Endereco': _controladorEndereco.text,
+                'Ponto_Referencia': _controladorReferencia.text,
+                'CEP': _controladorcep.text,
+                'Data_Nascimento': _controladornascimento.text,
+                'Sexo': _controladorSexo.text,
+                'CPF': _controladorcpf.text,
+                'Senha': _controladorsenha.text,
+                'Repetir_Senha': _controladorRepetirSenha.text,
+                'Profissao': _controladorProfissao.text,
+                'Nivel': _controladorNivel.text,
+              });
+              //.add({'E-mail': _controladoremail});
 
               /*print(_controladornome.text);
               print(_controladorCelular.text);
