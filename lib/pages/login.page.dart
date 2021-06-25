@@ -1,5 +1,7 @@
 import 'package:WorkSearch/pages/config.page.dart';
 import 'package:WorkSearch/pages/home.page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import './reset-password.page.dart';
 //import './home.page.dart';
@@ -8,6 +10,9 @@ import 'package:flutter/material.dart';
 //import './pedido.page.dart';
 
 class LoginPage extends StatelessWidget {
+  TextEditingController email = new TextEditingController();
+  TextEditingController senha = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +30,7 @@ class LoginPage extends StatelessWidget {
               height: 20,
             ),
             TextFormField(
+              controller: this.email,
               autofocus: false,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
@@ -41,6 +47,7 @@ class LoginPage extends StatelessWidget {
               height: 10,
             ),
             TextFormField(
+              controller: this.senha,
               autofocus: false,
               keyboardType: TextInputType.text,
               obscureText: true,
@@ -115,11 +122,27 @@ class LoginPage extends StatelessWidget {
                       )
                     ],
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
+                  onPressed: () async {
+                    try {
+                      UserCredential user = await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: this.email.text,
+                              password: this.senha.text);
+
+                      if (user != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        );
+                      }
+                    } catch (e) {
+                      ScaffoldMessenger(
+                        child: SnackBar(
+                          content: Text('Falha ao realizar o login!'),
+                          backgroundColor: Colors.redAccent,
+                        ),
+                      );
+                    }
                   },
                 ),
               ),
